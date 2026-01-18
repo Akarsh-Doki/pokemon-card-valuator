@@ -99,6 +99,6 @@ This repo supports a YOLOv8 region detector to make OCR reliable by cropping onl
 ## 👋 Feedback / Improvements
 This app is built to be extensible. Some future upgrades:
 - add PSA grade prediction from images
-- improve variant matching accuracy
+- improve trainer card matching accuracy
 - add more marketplaces and compare prices
 - caching + offline snapshots for faster load times

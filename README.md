@@ -1,121 +1,104 @@
 # 🎴 Pokémon Card Valuator
 
-This project turns a user photo of a Pokémon card into:
+Pokémon Card Valuator is a fast, modern web app that turns a card photo into:
 
-1) **Card identification** (canonical card_id)  
-2) **PSA grade prediction** (ML)  
-3) **Market data lookup** (ungraded + PSA 7/8/9/10 if available)
+- **Card identification** (name, set, card number)
+- **Variant selection** (choose the exact match from multiple printings)
+- **Market pricing** (Ungraded + PSA ladder when available)
+- **Interactive price history** (hover + fullscreen chart per grade)
 
-## Key design decisions (portfolio-grade)
-- **API-first pricing**: We build a *local snapshot* from a pricing API for fast runtime lookups and reproducibility.
-- **eBay for training labels**: We use eBay sold listings primarily to collect **graded images + grade labels** for training the grader model.
-- **No multipliers / no ROI advice** in runtime: the system returns **data**, not business recommendations.
+It’s designed to feel like a real consumer product: clean UI, instant feedback, and a smooth scanning-to-results experience.
 
-## Quickstart
+---
 
-### 1) Setup environment
+## ▶️ Demo Video
+
+📺 **Watch the full demo here (Unlisted YouTube):**  
+**[https://youtube.com/demo-link](https://youtu.be/z_X_pR68-K0)**
+
+---
+
+## 🌐 Live Frontend Demo (GitHub Pages)
+
+✅ GitHub Pages hosts the **frontend only** (UI demo).  
+⚠️ Uploading a photo from GitHub Pages will fail unless you run the backend locally.
+
+Frontend demo link:  
+**https://akarsh-doki.github.io/pokemon-card-valuator/**
+
+---
+
+## ✨ Features
+
+### ✅ Scan → Identify → Price
+Upload a photo and the backend will:
+- detect key fields from the card image  
+- match the best canonical card candidate  
+- retrieve market pricing for variants  
+
+### ✅ Variant Picker
+If multiple variants exist, the results page lets you select the exact match.
+
+### ✅ PSA Ladder
+When available, shows market pricing for:
+- Ungraded
+- PSA 7 / 8 / 9 / 9.5 / 10
+
+### ✅ Interactive Price History
+Hover to inspect historical pricing and expand into fullscreen mode.
+
+---
+
+## 🧠 How it works (high-level)
+
+The pipeline combines:
+- **Computer vision** to focus OCR on the important regions of the card (name / set / number)
+- **Matching logic** to map the scan to the closest real card entry
+- **Market integrations** to fetch ungraded + graded pricing and sale history
+- **FastAPI + SSE** to stream scan progress to the UI in real-time
+
+---
+
+## ⚠️ Current Limitations
+
+- PSA **grading prediction** (image → predicted grade) is **not implemented yet**
+- Price history depends on available public market data for that variant
+- Accuracy improves with good lighting, flat card positioning, and minimal glare
+
+---
+
+# ✅ Run Locally (Full Experience)
+
+## 1) Backend (FastAPI)
+
+### Setup environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2) Add secrets
-Copy `config/secrets.example.yaml` to `config/secrets.yaml` and fill:
-- `pokemonpricetracker_api_key`
-- `ebay_app_id`
-
-### 3) Build price snapshot (API)
-```bash
-python scripts/build_price_db_from_api.py
-```
-
-### 4) Collect training images (eBay graded images)
-```bash
-python scripts/collect_training_images.py
-```
-
-### 5) Train grader model (placeholder script)
-```bash
-python scripts/train_grader.py
-```
-
-### 6) Run FastAPI
-```bash
-uvicorn src.pokemon_valuator.api.main:app --reload
-```
-
-Then open:
-- `http://127.0.0.1:8000/docs`
-
-## DVC
-This repo includes a `dvc.yaml` and `params.yaml` skeleton so you can version:
-- dataset snapshots
-- model artifacts
-- evaluation reports
-
-Run:
-```bash
-dvc repro
-```
-
-## Notebooks
-See `/notebooks` for step-by-step explanations:
-- data collection
-- snapshot building
-- training plan
-- evaluation and calibration
-
-
-## Optional: Download prebuilt assets (Google Drive + gdown)
-
-This repo is designed so reviewers can run a demo without re-collecting data or retraining.
-
-1) Copy the template manifest:
-
-```bash
-cp config/assets.yaml.example config/assets.yaml
-```
-
-2) Edit `config/assets.yaml` and paste your Google Drive file IDs/URLs.
-
-3) Download assets:
-
-```bash
-python scripts/download_assets.py --all
-```
-
-What this can download:
-- pricing snapshot CSV (runtime lookup)
-- visual retrieval index (`card_index.json`)
-- trained grader weights (`best_model.h5`)
-- optional sample images
-
-> Note: `config/assets.yaml` should NOT be committed (it contains your personal links).
-
-
-## YOLO regions (title / card_number / set_symbol)
-
 This repo supports a YOLOv8 region detector to make OCR reliable by cropping only:
 - title
 - card_number
 - set_symbol
 
-### Train (your labeled dataset)
-```bash
-pip install ultralytics
-python scripts/train_yolo_regions.py --data /absolute/path/to/pokemon-dataset/data.yaml --epochs 150 --imgsz 960
-```
-
-### Run with YOLO enabled
-```bash
-export YOLO_REGIONS_WEIGHTS=/absolute/path/to/runs/yolo_regions/regions/weights/best.pt
-python scripts/test_region_id.py --image test_images/<your_photo>.jpg
-```
-
-If `YOLO_REGIONS_WEIGHTS` is not set, the system falls back to heuristic OCR crops (less reliable).
+## Usage
+- Open the frontend
+- Upload a Pokémon card image
+- Wait for the scan to complete
+- Choose the correct variant (if needed)
+- View PSA ladder + interactive price history
+- Submit feedback (“Yes correct” / “No wrong”) to improve future scans
 
 ## Demo
 
 ![Home](docs/screenshots/homepage.png)
 ![Result](docs/screenshots/resultspage.png)
+
+## 👋 Feedback / Improvements
+This app is built to be extensible. Some future upgrades:
+- add PSA grade prediction from images
+- improve variant matching accuracy
+- add more marketplaces and compare prices
+- caching + offline snapshots for faster load times

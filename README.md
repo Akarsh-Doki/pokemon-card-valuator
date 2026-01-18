@@ -49,7 +49,7 @@ Hover to inspect historical pricing and expand into fullscreen mode.
 
 ---
 
-## 🧠 How it works (high-level)
+## 🧠 How it works
 
 The pipeline combines:
 - **Computer vision** to focus OCR on the important regions of the card (name / set / number)

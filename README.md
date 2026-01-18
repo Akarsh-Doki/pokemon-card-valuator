@@ -114,3 +114,8 @@ python scripts/test_region_id.py --image test_images/<your_photo>.jpg
 ```
 
 If `YOLO_REGIONS_WEIGHTS` is not set, the system falls back to heuristic OCR crops (less reliable).
+
+## Demo
+
+![Home](docs/screenshots/home.png)
+![Result](docs/screenshots/result.png)

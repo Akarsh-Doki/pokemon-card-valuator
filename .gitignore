@@ -64,3 +64,5 @@ api/tmp_uploads/
 api/cache_approvals.json
 debug_price_*.json
 *.pt
+debug_price_*.json
+.DS_Store

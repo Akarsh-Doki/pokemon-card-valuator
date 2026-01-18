@@ -1,0 +1,19 @@
+pricing:
+  daily_limit: 100
+  include_graded: true
+  include_history: false
+
+training_images:
+  max_images_total: 3000
+  per_card_per_grade: 40
+  grade_min: 6
+  grade_max: 10
+
+model:
+  image_size: 224
+  batch_size: 32
+  epochs: 15
+  learning_rate: 0.0001
+
+evaluation:
+  report_path: reports/metrics.json

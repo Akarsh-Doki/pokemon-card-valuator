@@ -1,0 +1,49 @@
+cards_reference_csv: "data/raw/pokemon_tcg_api/cards_reference.csv"
+
+raw_data: data/raw
+processed_data: data/processed
+models_dir: models
+
+psa_grade_model:
+  grade_min: 1
+  grade_max: 10
+
+pricing:
+  api_price_db_filename: complete_price_database.csv
+
+
+training:
+  max_images_total: 3000
+  per_card_per_grade: 40
+  grade_min: 6
+  grade_max: 10
+  target_cards:
+    - Charizard Base Set
+    - Blastoise Base Set
+    - Venusaur Base Set
+    - Mewtwo Base Set
+    - Alakazam Base Set
+    - Gengar Fossil
+    - Dragonite Fossil
+    - Jolteon Jungle
+
+cache:
+  reference_images_dir: "cache/reference_images"
+  pokemontcg_responses_dir: "cache/pokemontcg_api_responses"
+
+pokemontcg_api:
+  base_url: "https://api.pokemontcg.io/v2"
+  timeout_sec: 45
+  max_candidates: 40
+  visual_top_k: 25
+
+pricing:
+  db_path: "data/processed/pricing/complete_price_database.csv"
+  api_timeout_sec: 20
+  enable_on_demand_api: true
+
+yolo:
+  weights_path: "runs/yolo_regions/regions2/weights/best.pt"
+
+pokemontcg:
+  page_size: 20

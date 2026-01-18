@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Moving gradient background */
+@keyframes auroraShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.aurora-bg {
+  background: radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.25), transparent 45%),
+              radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.18), transparent 40%),
+              radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.15), transparent 50%),
+              linear-gradient(120deg, rgba(17, 24, 39, 1), rgba(3, 7, 18, 1));
+  background-size: 300% 300%;
+  animation: auroraShift 12s ease-in-out infinite;
+}
+
+/* Glass container */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Nice shadow */
+.soft-shadow {
+  box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+}

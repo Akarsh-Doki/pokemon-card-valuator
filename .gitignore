@@ -1,0 +1,60 @@
+# secrets
+config/secrets.yaml
+.env
+.venv/
+
+# mac / python junk
+.DS_Store
+__pycache__/
+*.pyc
+
+# notebooks
+.ipynb_checkpoints/
+
+# local caches
+cache/
+data/cache/
+
+# training outputs / huge files
+runs/
+
+# editable / build artifacts
+*.egg-info/
+dist/
+build/
+
+# data (keep minimal structure + eval labels)
+data/*
+!data/.gitkeep
+!data/eval/
+!data/eval/.gitkeep
+!data/eval/labels.csv
+
+# models/artifacts (keep folder marker only)
+models/*
+!models/.gitkeep
+
+# optional: ignore full test set, keep a tiny sample set
+test_images/*
+!test_images/sample/
+!test_images/sample/.gitkeep
+!test_images/sample/*.jpg
+!test_images/sample/*.jpeg
+!test_images/sample/*.png
+
+# dvc
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+# (Track dvc.yaml if you actually use DVC; otherwise delete it)
+# dvc.yaml
+
+# misc project-specific
+config/assets.yaml
+data/raw/sample_images.zip
+scripts/dev/
+integrations/pokemonpricetracker_api.py
+src/pokemon_valuator/models/psa_grader_model.py
+src/pokemon_valuator/utils/psa_feature_extractor.py
+frontend/node_modules/
+node_modules/

@@ -1,0 +1,40 @@
+# config/assets.yaml.example
+# -----------------------------------------------------------------------------
+# Asset download manifest for reviewers.
+#
+# How to use:
+# 1) Copy this file to config/assets.yaml
+# 2) Fill in the Google Drive file IDs or full "uc?id=" URLs
+# 3) Run:
+#       python scripts/download_assets.py --all
+#
+# Notes:
+# - This file SHOULD be committed (it's an example/template).
+# - config/assets.yaml should NOT be committed (it contains your actual links).
+# - sha256 is optional but strongly recommended for reproducibility.
+# -----------------------------------------------------------------------------
+
+assets:
+  price_db:
+    description: "Local pricing snapshot used at runtime (ungraded + PSA 7-10)."
+    url: "https://drive.google.com/uc?id=YOUR_FILE_ID_HERE"
+    path: "data/processed/pricing/complete_price_database.csv"
+    sha256: ""
+
+  card_index:
+    description: "Visual retrieval index (embeddings for official reference images)."
+    url: "https://drive.google.com/uc?id=YOUR_FILE_ID_HERE"
+    path: "data/processed/identification/card_index.json"
+    sha256: ""
+
+  psa_grader_model:
+    description: "Trained PSA grade prediction model weights."
+    url: "https://drive.google.com/uc?id=YOUR_FILE_ID_HERE"
+    path: "models/psa_grader_v2/best_model.h5"
+    sha256: ""
+
+  sample_images:
+    description: "Small sample images for quick demo (optional)."
+    url: "https://drive.google.com/uc?id=YOUR_FILE_ID_HERE"
+    path: "data/raw/sample_images.zip"
+    sha256: ""

@@ -1,0 +1,50 @@
+stages:
+  build_price_db:
+    cmd: python scripts/build_price_db_from_api.py
+    deps:
+      - scripts/build_price_db_from_api.py
+      - config/config.yaml
+      - config/secrets.yaml
+    outs:
+      - data/processed/pricing/complete_price_database.csv
+
+
+build_card_index:
+  cmd: python scripts/build_card_index.py
+  deps:
+    - scripts/build_card_index.py
+    - src/pokemon_valuator/models/card_identifier.py
+    - config/config.yaml
+    - data/raw/pokemon_tcg_api/cards_reference.csv
+  outs:
+    - data/processed/identification/card_index.json
+
+  collect_training_images:
+    cmd: python scripts/collect_training_images.py
+    deps:
+      - scripts/collect_training_images.py
+      - config/config.yaml
+      - config/secrets.yaml
+    outs:
+      - data/raw/training_images/metadata.csv
+      - data/raw/training_images/images
+
+  train_grader:
+    cmd: python scripts/train_grader.py
+    deps:
+      - scripts/train_grader.py
+      - data/raw/training_images/metadata.csv
+      - data/raw/training_images/images
+      - params.yaml
+    outs:
+      - models/psa_grader_v2/best_model.h5
+
+  evaluate:
+    cmd: python scripts/evaluate_grader.py
+    deps:
+      - scripts/evaluate_grader.py
+      - models/psa_grader_v2/best_model.h5
+      - data/raw/training_images/metadata.csv
+      - params.yaml
+    outs:
+      - reports/metrics.json

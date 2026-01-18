@@ -7,6 +7,15 @@ export function sseUrl(jobId: string) {
   return `${API_BASE}/progress/${jobId}`;
 }
 
+export async function pingApi(): Promise<boolean> {
+  try {
+    const r = await fetch(`${API_BASE}/health`, { method: "GET" });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function startIdentify(file: File): Promise<{ job_id: string }> {
   const form = new FormData();
   form.append("file", file);
@@ -40,7 +49,9 @@ export async function sendFeedback(payload: {
 }
 
 export async function fetchHistory(variantUrl: string) {
-  const r = await fetch(`${API_BASE}/price_history?url=${encodeURIComponent(variantUrl)}`);
+  const r = await fetch(
+    `${API_BASE}/price_history?url=${encodeURIComponent(variantUrl)}`
+  );
   if (!r.ok) throw new Error("History fetch failed");
   return r.json();
 }

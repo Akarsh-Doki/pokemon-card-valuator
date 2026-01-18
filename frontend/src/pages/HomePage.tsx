@@ -1,21 +1,40 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { startIdentify } from "../api";
+import { pingApi, startIdentify } from "../api";
 import DropZone from "../components/DropZone";
 import PokeballIcon from "../components/PokeballIcon";
+
+function readFileAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result || ""));
+    r.onerror = () => reject(new Error("Failed to read file"));
+    r.readAsDataURL(file);
+  });
+}
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   const handleFile = async (file: File) => {
     try {
-      const previewUrl = URL.createObjectURL(file);
+      const preview = await readFileAsDataURL(file);
+
+      // ✅ Check if backend is reachable (uses same API_BASE logic)
+      const ok = await pingApi();
+
+      // ✅ If backend is NOT running, go to demo results instead
+      if (!ok) {
+        sessionStorage.setItem(`preview:demo`, preview);
+        navigate(`/result/demo`);
+        return;
+      }
+
+      // start backend job
       const { job_id } = await startIdentify(file);
 
-      const prev = sessionStorage.getItem(`preview:${job_id}`);
-      if (prev) URL.revokeObjectURL(prev);
-
-      sessionStorage.setItem(`preview:${job_id}`, previewUrl);
+      // store preview for this job
+      sessionStorage.setItem(`preview:${job_id}`, preview);
 
       navigate(`/result/${job_id}`);
     } catch (e) {
@@ -23,6 +42,8 @@ export default function HomePage() {
       alert("Upload failed. Make sure the API is running, then try again.");
     }
   };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-12">

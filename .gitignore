@@ -58,6 +58,7 @@ src/pokemon_valuator/models/psa_grader_model.py
 src/pokemon_valuator/utils/psa_feature_extractor.py
 frontend/node_modules/
 node_modules/
+notebooks/
 
 # runtime files
 api/tmp_uploads/

@@ -117,5 +117,5 @@ If `YOLO_REGIONS_WEIGHTS` is not set, the system falls back to heuristic OCR cro
 
 ## Demo
 
-![Home](docs/screenshots/home.png)
-![Result](docs/screenshots/result.png)
+![Home](docs/screenshots/homepage.png)
+![Result](docs/screenshots/resultspage.png)

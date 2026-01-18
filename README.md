@@ -1,4 +1,4 @@
-# 🎴 Pokémon Card Valuator (Portfolio Project)
+# 🎴 Pokémon Card Valuator
 
 This project turns a user photo of a Pokémon card into:
 

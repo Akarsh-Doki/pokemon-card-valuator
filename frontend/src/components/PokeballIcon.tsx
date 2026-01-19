@@ -24,7 +24,7 @@ export default function PokeballIcon({ size = 20 }: { size?: number }) {
         fillOpacity="0.85"
       />
 
-      {/* Bottom half (NEW) */}
+      {/* Bottom half*/}
       <path
         d="M10 64C15 93 37 114 64 114C91 114 113 93 118 64H10Z"
         fill="#ffffff"

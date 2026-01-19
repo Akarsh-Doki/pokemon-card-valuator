@@ -1,17 +1,3 @@
-################################################################################
-# FILE: scripts/collect_training_images.py
-################################################################################
-# PURPOSE: Collect graded-card images for training the PSA grade model.
-#
-# KEY CHOICE:
-# - Use eBay ONLY for images + grade labels (from title, optionally OCR verify)
-# - Do NOT use eBay here for your primary price truth in production
-#
-# OUTPUT:
-# - data/raw/training_images/metadata.csv
-# - data/raw/training_images/images/*.jpg
-################################################################################
-
 from __future__ import annotations
 
 import re

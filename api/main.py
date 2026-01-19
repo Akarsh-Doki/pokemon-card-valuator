@@ -78,7 +78,6 @@ async def progress(job_id: str):
         raise HTTPException(status_code=404, detail="job not found")
 
     async def event_gen():
-        # Send an instant initial event so UI updates immediately
         yield (
             "event: progress\ndata: "
             + json.dumps({"stage": "Starting", "detail": "Preparing scan…"})

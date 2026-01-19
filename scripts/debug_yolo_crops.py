@@ -6,7 +6,6 @@ from PIL import Image
 
 from src.pokemon_valuator.components.yolo_region_detector import YOLORegionDetector
 
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)

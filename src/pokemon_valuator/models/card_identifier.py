@@ -684,7 +684,6 @@ class CardIdentifier:
 
                 if b > 600:
                     continue
-
                 if a > b:
                     continue
 
@@ -1060,7 +1059,6 @@ class CardIdentifier:
         if not isinstance(tcg, dict):
             return None
 
-        # 1) direct field(s)
         for k in ("productId", "productID", "tcgplayerId", "tcgplayer_id", "id"):
             v = tcg.get(k)
             if v is None:

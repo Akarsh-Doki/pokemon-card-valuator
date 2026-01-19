@@ -20,20 +20,16 @@ export default function HomePage() {
     try {
       const preview = await readFileAsDataURL(file);
 
-      // ✅ Check if backend is reachable (uses same API_BASE logic)
       const ok = await pingApi();
 
-      // ✅ If backend is NOT running, go to demo results instead
       if (!ok) {
         sessionStorage.setItem(`preview:demo`, preview);
         navigate(`/result/demo`);
         return;
       }
 
-      // start backend job
       const { job_id } = await startIdentify(file);
 
-      // store preview for this job
       sessionStorage.setItem(`preview:${job_id}`, preview);
 
       navigate(`/result/${job_id}`);
@@ -42,8 +38,6 @@ export default function HomePage() {
       alert("Upload failed. Make sure the API is running, then try again.");
     }
   };
-
-
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-12">

@@ -93,8 +93,6 @@ class PokemonPriceTrackerClient:
         if v is None:
             return None
 
-        # If the graded number is very large (>= 5000) but market price looks like normal dollars (< 2000),
-        # it's almost certainly cents.
         if market_hint is not None and market_hint < 2000 and v >= 5000:
             return round(v / 100.0, 2)
 
@@ -156,7 +154,6 @@ class PokemonPriceTrackerClient:
         if not data:
             return None
 
-        # IMPORTANT: your response has data as a dict (not a list)
         card = data if isinstance(data, dict) else (data[0] if isinstance(data, list) and data else {})
         if not card:
             return None
@@ -181,8 +178,6 @@ class PokemonPriceTrackerClient:
             market_market = PokemonPriceTrackerClient._to_float(raw_market)
 
         market_hint = market_market  # used for cents-vs-dollars heuristic
-
-        # ✅ NEW graded extraction from ebay.salesByGrade
         ebay = card.get("ebay") or {}
         sales_by_grade = ebay.get("salesByGrade") or {}
         psa = PokemonPriceTrackerClient._extract_psa_prices_from_sales_by_grade(sales_by_grade, market_hint)

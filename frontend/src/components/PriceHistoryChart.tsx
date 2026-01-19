@@ -160,7 +160,7 @@ export default function PriceHistoryChart({ history }: { history: any }) {
       scheduleHoverUpdate({ date: String(label), values });
     }
 
-    return null; // invisible tooltip box
+    return null; 
   }
 
   const ChartCore = ({ height }: { height: number }) => (
@@ -184,7 +184,7 @@ export default function PriceHistoryChart({ history }: { history: any }) {
             <Tooltip
               content={<TooltipBridge />}
               cursor={<CrosshairCursor />}
-              wrapperStyle={{ display: "none" }} // ✅ prevents any tooltip blackout box
+              wrapperStyle={{ display: "none" }}
             />
 
             <Legend />
@@ -311,7 +311,6 @@ export default function PriceHistoryChart({ history }: { history: any }) {
         </div>
       </div>
 
-      {/* ---------- Fullscreen Modal ---------- */}
       <AnimatePresence>
         {fullscreen && (
           <motion.div

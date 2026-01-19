@@ -164,7 +164,6 @@ class GradedPriceLookup:
                 "last_updated": now_iso,
                 "resolved_by": "direct_url",
             }
-
         res = search_pricecharting_page(
             card_name=card_name,
             set_name=set_name,

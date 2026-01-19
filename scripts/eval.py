@@ -23,8 +23,6 @@ _SMART_QUOTES = {
     "–": "-",
     "—": "-",
 }
-
-
 def _fix_quotes(s: str) -> str:
     for a, b in _SMART_QUOTES.items():
         s = s.replace(a, b)
@@ -200,16 +198,9 @@ def yolo_proxy_and_coverage_from_debug(debug: Dict[str, Any], class_remap: Dict[
     Proxy “YOLO quality” signals from debug (no IoU metrics).
     Also computes remapped-class coverage counts if debug contains detections.
 
-    Detection list sources we try (best-effort):
-      - debug["yolo"]["detections"]  (list[dict])
-      - debug["yolo_detections"]     (list[dict])
-
-    Detection dict shapes we handle:
-      {"cls": 3} or {"class_id": 3} or {"class": 3}
     """
     ocr = debug.get("ocr") or {}
 
-    # Proxy: did YOLO win for number crop?
     used_yolo_number_crop = bool(ocr.get("number_yolo") or {})
 
     frac = ocr.get("card_number")
@@ -240,8 +231,6 @@ def yolo_proxy_and_coverage_from_debug(debug: Dict[str, Any], class_remap: Dict[
         "fraction_plaus_score": plaus,
         "remapped_class_coverage": coverage, 
     }
-
-# Main
 def main() -> int:
     ap = argparse.ArgumentParser(description="Evaluate identification + YOLO proxy coverage on ./test_images")
     ap.add_argument("--images_dir", default="test_images", help="Directory of test images (relative to repo root)")
@@ -254,8 +243,6 @@ def main() -> int:
     images_dir = (root / args.images_dir).resolve()
     labels_path = (root / args.labels).resolve()
     out_path = (root / args.out).resolve()
-
-    # Allow running from a fresh repo clone without `pip install -e .`
     src_dir = root / "src"
     if src_dir.exists() and str(src_dir) not in sys.path:
         sys.path.insert(0, str(src_dir))
@@ -279,8 +266,6 @@ def main() -> int:
     )
     if args.limit and args.limit > 0:
         images = images[: args.limit]
-
-    # YOLO remap
     class_remap = _try_load_class_remap()
 
     yolo_weights = str(root / "runs/yolo_regions/regions2/weights/best.pt")
@@ -307,19 +292,15 @@ def main() -> int:
     n_num_ok = 0
     n_all_ok = 0
 
-    # YOLO/OCR proxy counters
     yolo_used = 0
     fraction_ok = 0
 
-    # Remapped-class coverage totals
     remapped_coverage_totals: Dict[int, int] = {}
 
-    # PriceCharting counters
     pc_any = 0
     pc_variants_total = 0
     pc_variants_with_price = 0
 
-    # Extra metrics
     per_image_secs: List[float] = []
     conf_values: List[float] = []
 
@@ -397,7 +378,6 @@ def main() -> int:
             exp_num = lab.expected_number if lab else ""
             exp_id = lab.expected_card_id if lab else ""
 
-            # Score only if GT provided
             name_match = ""
             set_match = ""
             num_match = ""
@@ -433,8 +413,6 @@ def main() -> int:
             if exp_name and exp_set and exp_num:
                 all_ok = (name_ok and set_ok and num_ok)
                 all_match = str(all_ok)
-
-            # counters
             if res.status == "success":
                 n_success += 1
 
@@ -447,7 +425,6 @@ def main() -> int:
             if exp_name and exp_set and exp_num and all_ok:
                 n_all_ok += 1
 
-            # YOLO/OCR proxy + remapped coverage
             yinfo = yolo_proxy_and_coverage_from_debug(debug, class_remap)
             if yinfo["used_yolo_number_crop"]:
                 yolo_used += 1
@@ -458,7 +435,6 @@ def main() -> int:
             for k, v in cov.items():
                 remapped_coverage_totals[k] = remapped_coverage_totals.get(k, 0) + int(v)
 
-            # PriceCharting
             pc_status = pc.get("status") or ""
             if pc_status and pc_status not in ("missing_fields", "skipped_low_info", "skipped_no_candidates"):
                 pc_any += 1

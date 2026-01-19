@@ -7,7 +7,6 @@ from PIL import Image, ImageOps
 from pokemon_valuator.components.yolo_region_detector import YOLORegionDetector
 from pokemon_valuator.models.card_identifier import CardIdentifier
 
-
 CLASS_REMAP = {
     "set_symbol": "title",
     "title": "card_number",

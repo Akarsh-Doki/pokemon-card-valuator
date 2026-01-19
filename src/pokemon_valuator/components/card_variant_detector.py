@@ -7,8 +7,6 @@ import numpy as np
 import cv2
 
 from src.pokemon_valuator.utils.image_io import read_image_bgr
-
-
 try:
     import pytesseract
 except Exception:

@@ -23,14 +23,12 @@ export default function ResultPage() {
   const [history, setHistory] = useState<any>(null);
   const [historyError, setHistoryError] = useState<string>("");
 
-  // ✅ In DEMO mode, we store preview under preview:demo
   const preview = useMemo(() => {
     if (!jobId) return "";
     const key = isDemo ? "preview:demo" : `preview:${jobId}`;
     return sessionStorage.getItem(key) || "";
   }, [jobId, isDemo]);
 
-  // ✅ Demo payload (GitHub Pages / no backend)
   const DEMO_PAYLOAD = useMemo(() => {
     return {
       status: "success",
@@ -62,11 +60,9 @@ export default function ResultPage() {
     };
   }, []);
 
-  // ✅ MAIN SSE Listener (disabled in demo)
   useEffect(() => {
     if (!jobId) return;
 
-    // ✅ If demo, load instantly and skip backend entirely
     if (isDemo) {
       setResult(DEMO_PAYLOAD);
       setLoading(false);
@@ -81,7 +77,6 @@ export default function ResultPage() {
       return;
     }
 
-    // ✅ Normal mode (backend SSE)
     const es = new EventSource(sseUrl(jobId));
 
     es.addEventListener("progress", (ev) => {
@@ -111,19 +106,15 @@ export default function ResultPage() {
       setDetail("Please try a clearer photo or different lighting.");
       es.close();
     });
-
     return () => es.close();
   }, [jobId, isDemo, DEMO_PAYLOAD]);
 
-  // ✅ Load price history when selected variant changes
   useEffect(() => {
     const loadHistory = async () => {
       setHistory(null);
       setHistoryError("");
 
       if (!selectedVariant?.url) return;
-
-      // ✅ Demo mode: don't fetch history (no backend)
       if (isDemo) {
         setHistory(null);
         setHistoryError("Price history is not available in demo mode.");
@@ -138,7 +129,6 @@ export default function ResultPage() {
           setHistoryError("No price history available for this variant.");
           return;
         }
-
         setHistory(data);
       } catch (e) {
         setHistory(null);
@@ -149,7 +139,6 @@ export default function ResultPage() {
     loadHistory();
   }, [selectedVariant, isDemo]);
 
-  // ✅ Pricing extraction
   const pricing = result?.debug?.pricing ?? {};
   const pc = result?.debug?.pricecharting ?? pricing?.pricecharting ?? {};
 
@@ -176,8 +165,6 @@ export default function ResultPage() {
     <div className="min-h-screen px-6 py-10">
       <div className="max-w-6xl mx-auto glass soft-shadow rounded-3xl p-6 md:p-8 relative overflow-hidden">
         {loading && <LoadingOverlay stage={stage} detail={detail} />}
-
-        {/* Top header */}
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="text-sm text-white/60">Pokemon Valuator</div>
@@ -212,7 +199,6 @@ export default function ResultPage() {
         </div>
 
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <div className="text-sm text-white/70 mb-3">Captured Image</div>
 
@@ -235,8 +221,6 @@ export default function ResultPage() {
               Scan Again
             </button>
           </div>
-
-          {/* Right */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
             <div className="text-sm text-white/70 mb-3">Variants</div>
 
@@ -280,7 +264,6 @@ export default function ResultPage() {
               )}
             </div>
 
-            {/* Feedback (disabled in demo mode) */}
             <div className="mt-8 border-t border-white/10 pt-5">
               <div className="text-sm font-medium">Was this the right card?</div>
               <div className="text-white/60 text-sm mt-1">

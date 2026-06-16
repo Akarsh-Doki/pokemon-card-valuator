@@ -116,28 +116,18 @@ The suite covers the card-matching logic, OCR field parsing, and the pricing-int
 
 ---
 
-## ▶️ Run Locally (Full Experience)
-
-### 1) Backend (FastAPI)
-
+# ✅ Run Locally (Full Experience)
+## 1) Backend (FastAPI)
+### Setup environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn api.main:app --reload      # confirm this matches your real entrypoint
 ```
-
-The backend uses a YOLOv8 region detector that crops each card to **title**, **card_number**, and **set_symbol** before OCR.
-
-### 2) Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open the local URL it prints, upload a card photo, and watch the scan stream.
+This repo supports a YOLOv8 region detector to make OCR reliable by cropping only:
+- title
+- card_number
+- set_symbol
 
 ## Usage
 - Open the frontend

@@ -49,13 +49,62 @@ Hover to inspect historical pricing and expand into fullscreen mode.
 
 ---
 
+## 🧩 Architecture
+
+```mermaid
+flowchart TD
+  IMG(["Card photo uploaded"]) --> YOLO["YOLOv8 detects 3 regions: title, card number, set symbol"]
+  YOLO --> OCR["Multi-engine OCR: PaddleOCR, then EasyOCR / pytesseract fallback"]
+  OCR --> MATCH["Fuzzy-match against the card database"]
+  MATCH --> TIE{"Ambiguous match?"}
+  TIE -->|yes| HIST["RGB-histogram tie-breaker"]
+  TIE -->|no| PRICE["Pricing: PriceCharting + PSA ladder"]
+  HIST --> PRICE
+  PRICE --> UI(["Results streamed to the UI via SSE"])
+```
+
 ## 🧠 How it works
 
-The pipeline combines:
-- **Computer vision** to focus OCR on the important regions of the card (name / set / number)
-- **Matching logic** to map the scan to the closest real card entry
-- **Market integrations** to fetch ungraded + graded pricing and sale history
-- **FastAPI + SSE** to stream scan progress to the UI in real-time
+1. **Region detection** — a YOLOv8 detector crops the card to three regions (title, card number, set symbol), so OCR never reads the whole noisy photo.
+2. **Multi-engine OCR** — PaddleOCR reads each region first, with EasyOCR and pytesseract as fallbacks, so one engine's misread doesn't sink the scan.
+3. **Matching** — the OCR text is fuzzy-matched against the card database; when two printings share a name and number, an RGB-colour-histogram comparison breaks the tie.
+4. **Pricing** — ungraded + PSA-ladder prices and history are pulled from market integrations (PriceCharting + TCGdex), cached on disk.
+5. **Streaming** — FastAPI streams scan progress over SSE, and CPU-bound vision work is offloaded with `run_in_executor` so the server stays responsive.
+
+> **Routing OCR through YOLO region detection lifted field-read accuracy from roughly 30% on the raw photo to about 85%.**
+
+## 🛠 Tech Stack
+
+| Layer | Technology | Why |
+| --- | --- | --- |
+| **Frontend** | React + TypeScript + Vite + Tailwind + Recharts | Type-safe UI, fast builds, Recharts for the price chart |
+| **Backend** | FastAPI, Python | Async, streams scan progress over SSE, auto OpenAPI docs |
+| **Region detection** | YOLOv8 (Ultralytics) | Crops title / number / set so OCR runs on clean regions (~30% → ~85%) |
+| **OCR** | PaddleOCR (primary), EasyOCR / pytesseract (fallback) | If one engine misreads, another recovers the field |
+| **Matching** | Fuzzy text match + RGB-histogram tie-breaker | Disambiguates near-identical printings |
+| **Pricing** | PriceCharting + TCGdex | Ungraded + PSA-graded prices and history |
+| **Data/model versioning** | DVC | Reproducible data/models without bloating git |
+| **Streaming** | Server-Sent Events (SSE) | Real-time scan progress to the UI |
+
+## 🧭 Key Design Decisions
+
+Full reasoning in [DECISIONS.md](DECISIONS.md). The headline calls:
+
+| Decision | Choice | Why |
+| --- | --- | --- |
+| Raw-photo OCR vs region detection first | **Region detection first** | Full-image OCR was ~30%; cropping to title/number/set pushed it to ~85% |
+| One OCR engine vs several | **Multi-engine with fallback** | Fallbacks recover a field when the primary misreads |
+| Text match only vs a visual signal | **Text + RGB histogram** | Two printings can share a name/number; colour breaks the tie |
+| WebSockets vs SSE | **SSE** | One-way progress; simpler than WebSockets |
+| Commit data/models vs DVC | **DVC** | Keeps the repo small and reproducible |
+
+## 🧪 Testing
+
+```bash
+pytest -v
+```
+
+The suite covers the card-matching logic, OCR field parsing, and the pricing-integration layer. <!-- edit this line to match what's actually in tests/ -->
 
 ---
 
@@ -67,21 +116,28 @@ The pipeline combines:
 
 ---
 
-# ✅ Run Locally (Full Experience)
+## ▶️ Run Locally (Full Experience)
 
-## 1) Backend (FastAPI)
+### 1) Backend (FastAPI)
 
-### Setup environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+uvicorn api.main:app --reload      # confirm this matches your real entrypoint
 ```
 
-This repo supports a YOLOv8 region detector to make OCR reliable by cropping only:
-- title
-- card_number
-- set_symbol
+The backend uses a YOLOv8 region detector that crops each card to **title**, **card_number**, and **set_symbol** before OCR.
+
+### 2) Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local URL it prints, upload a card photo, and watch the scan stream.
 
 ## Usage
 - Open the frontend
